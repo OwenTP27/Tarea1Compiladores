@@ -1,1 +1,59 @@
+<tipo> ::= "int" | "float" | "bool" | "char" | "string"
 
+<chars> ::= <chars> <char> | <char>
+
+<char> ::= "'" ([a-zA-Z0-9_'!@#$%^&*=] ) "'"
+
+<string> ::= '"' <chars> '"'
+
+<id> ::= [a-zA-Z_] | [a-zA-Z_] <chars>
+
+<booleano> ::= "true" | "false"
+
+<flotante> ::= <entero> "." [0-9]+
+
+<programa> ::= <funciones> <main> <funciones>
+
+<funciones> ::= <funciones> <funcion> | <funcion> |
+
+<funcion> ::= <tipo> "~" <id> "<|" <parametros> "|>" <bloque>
+
+<parametros> ::= <parametros> "," <parametro> | <parametro>
+
+<bloque> ::= <LBlock> <contenido> <RBlock>
+
+<contenido> ::= <sentencias> | <estructurasControl>
+
+<sentencias> ::= <sentencias> <sentencia> | <sentencia>
+
+<sentencia> ::= <creacion> <FExpr> | <asignacion> <FExpr> | <expresion> <FExpr> | <io> <FExpr> | <break> <FExpr> | <return> <FExpr>
+
+
+
+// Simbolos declarados como terminales para reutilizacion sencilla
+<LBlock> ::= "¿:"
+<RBlock> ::= ":?"
+<asig> ::= "Ͱ"
+<LParen> ::= "є:"
+<RParen> ::= ":э"
+<LParenC> ::= "ʃ:"
+<RParenC> ::= ":ʅ"
+<con> ::= "λ"
+<dis> ::= "θ"
+<neg> ::= "Σ"
+<FExpr> ::= "»"
+<LComen> ::= "¡"
+<RComen> ::= "!"
+<comen> ::= "|"
+<sum> ::= "+"
+<res> ::= "-"
+<div> ::= "/"
+<DivE> ::= "//"
+<mod> ::= "mod"
+<pot> ::= "pot"
+<inc> ::= "++"
+<dec> ::= "--"
+<return> ::= "return"
+<break> ::= "break"
+<write> ::= "write"
+<read> ::= "read"
