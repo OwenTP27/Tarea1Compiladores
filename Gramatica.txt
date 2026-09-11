@@ -1,36 +1,123 @@
-<tipo> ::= "int" | "float" | "bool" | "char" | "string"
-
-<chars> ::= <chars> <char> | <char>
-
-<char> ::= "'" ([a-zA-Z0-9_'!@#$%^&*=] ) "'"
-
-<string> ::= '"' <chars> '"'
-
-<id> ::= [a-zA-Z_] | [a-zA-Z_] <chars>
-
-<booleano> ::= "true" | "false"
-
-<flotante> ::= <entero> "." [0-9]+
-
-<programa> ::= <funciones> <main> <funciones>
+<programa> ::= <funciones> <principal> <funciones>
 
 <funciones> ::= <funciones> <funcion> | <funcion> |
 
-<funcion> ::= <tipo> "~" <id> "<|" <parametros> "|>" <bloque>
+<funcion> ::= <tipo> <id> <LParen> <parametros> <RParen> <bloque>
 
-<parametros> ::= <parametros> "," <parametro> | <parametro>
+<principal> ::= "void" "principal" <LParen> <RParen> <bloque>
 
-<bloque> ::= <LBlock> <contenido> <RBlock>
+<parametros> ::= <parametros> <coma> <parametro> | <parametro>
 
-<contenido> ::= <sentencias> | <estructurasControl>
+<parametro> ::= <tipo> <id> | <accesoArreglo>
+
+<bloque> ::= <LBlock> <sentencias> <RBlock>
 
 <sentencias> ::= <sentencias> <sentencia> | <sentencia>
 
-<sentencia> ::= <creacion> <FExpr> | <asignacion> <FExpr> | <expresion> <FExpr> | <io> <FExpr> | <break> <FExpr> | <return> <FExpr>
+<sentencia> ::= <creacion> <FExpr> | <asignacion> <FExpr> | <expresion> <FExpr> | <llamadaFuncion> <FExpr> | <estructuraControl> | <return> <FExpr> | <break> <FExpr> | <read> <FExpr> | <write> <FExpr>
+
+<creacion> ::=  <creacionVariable> | <creacionArreglo>
+
+<creacionVariable> ::= <tipo> <id> | <tipo> <id> <asig> <expresion>
+
+<creacionArreglo> ::= <tipo> <id> <LParenC> <expresion> <RParenC> | <tipoArreglo> <id> <LParenC> <expresion> <RParenC> <asig> <LBlock> <valores> <RBlock>
+
+<valores> ::= <valores> <coma> <valor> | <valor>
+
+<valor> ::= <literal> | <expresion>
+
+<asignacion> ::= <variable> <asig> <expresion>
+
+<variable> ::= <id> | <accesoArreglo>
+
+<accesoArreglo> ::= <id> <LParenC> <expresion> <RParenC>
+
+<expresion> ::= <expresionLogica> | <expresionRelacional> | <expresionAritmetica> | <operando>
+
+<expresionAritmetica> ::= <modulo>
+
+<modulo> ::= <modulo> "mod" <multiplicacion> | <multiplicacion>
+
+<multiplicacion> ::= <multiplicacion> <mul> <sumaResta> | <multiplicacion> <div> <sumaResta> | <multiplicacion> <DivE> <sumaResta> | <sumaResta>
+
+<sumaResta> ::= <sumaResta> <sum> <potencia> | <sumaResta> <res> <potencia> | <potencia>
+
+<potencia> ::= <unario> <pot> <potencia> | <unario>
+
+<unario> ::= <res> <unario> | <postfijo>
+
+<postfijo> ::= <operando> <inc> | <operando> <dec> | <operando>
+
+<expresionRelacional> ::= <operandoRelacional> <operadorRelacional> <operandoRelacional>
+
+<operandoRelacional> ::= <LParenC> <valor_relacional> <RParenC>
+
+<valor_relacional> ::= <expresionAritmetica> | <id> | <accesoArreglo> | <llamadaFuncion> | <literal>
+
+<operadorRelacional> ::= <menor> | <MenorI> | <mayor> | <MayorI> | <igual> | <diferente>
+
+<expresionLogica> ::= <disyuncion>
+
+<disyuncion> ::= <disyuncion> <dis> <conjuncion> | <conjuncion>
+
+<conjuncion> ::= <conjuncion> <con> <negacion> | <negacion>
+
+<negacion> ::= <neg> <negacion> | <operando_logico>
+
+<operando_logico> ::= <LParen> <expresionLogica> <RParen> | <expresionRelacional> | <booleano> | <id>
+
+<expresion_parentizada> ::= <LParen> <expresionAritmetica> <RParen>
+
+<operando> ::= <literal> | <id> | <accesoArreglo> | <llamadaFuncion> | <expresion_parentizada>
+
+<llamadaFuncion> ::= <id><LParen> <argumentos> <RParen>
+
+<argumentos> ::= <argumentos> <coma> <argumento> | <argumento>
+
+<argumento> ::= <expresionAritmetica> | <expresionRelacional> | <expresionLogica> | <id> | <accesoArreglo> | <literal>
+
+<estructuraControl> ::= <if> | <while> | <for>
+
+<if> ::= "if" <LParen> <expresionLogica> <RParen> <bloque> <elif> <else> | "if" <LParen> <expresionLogica> <RParen> <bloque> <else> | "if" <LParen> <expresionLogica> <RParen> <bloque>
+
+<elif> ::= "elif" <LParen> <expresionLogica> <RParen> <bloque> <elif> |
+
+<else> ::= "else" <bloque> |
+
+<while> ::= "while" <LParen> <expresionLogica> <RParen> <bloque>
+
+<for> ::= "for" <LParen> <declaracion> <FExpr> <expresionRelacional> <FExpr> <incrementoDecremento> <RParen> <bloque>
+
+<incrementoDecremento> ::= <id> <inc> | <id> <dec>
+
+<return> ::= "return" <valorRetorno>
+
+<valorRetorno> ::= <expresionAritmetica> | <literal> | <id> | <accesoArreglo> | <llamadaFuncion>
+
+<read> ::= "read" <LParen> <literal> <RParen>
+
+<write> ::= "write" <LParen> <literal> <RParen> | "write" <LParen> <id> <RParen> | "write" <LParen> <accesoArreglo> <RParen>
+
+<literal> ::= <entero> | <flotante> | <booleano> | <char> | <string>
 
 
+============ TERMINALES =================================
+
+<tipo> ::= "int" | "float" | "bool" | "char" | "string"
+<chars> ::= <chars> <char> | <char>
+<char> ::= "'" ([a-zA-Z0-9_'!@#$%^&*=] ) "'"
+<string> ::= '"' <chars> '"'
+<id> ::= [a-zA-Z_] | [a-zA-Z_] <chars>
+<booleano> ::= "true" | "false"
+<flotante> ::= <entero> "." [0-9]+
+<entero> ::= <res> <enteroPos> | <enteroPos> | "0"
+<enteroPos> ::= numeros
+<numeros> ::= <numeros> <numero> | <numero>
+<numero> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<break> ::= "break"
 
 // Simbolos declarados como terminales para reutilizacion sencilla
+<val> ::= "val"
 <LBlock> ::= "¿:"
 <RBlock> ::= ":?"
 <asig> ::= "Ͱ"
@@ -48,12 +135,16 @@
 <sum> ::= "+"
 <res> ::= "-"
 <div> ::= "/"
+<mul> ::= "*"
 <DivE> ::= "//"
 <mod> ::= "mod"
 <pot> ::= "pot"
 <inc> ::= "++"
 <dec> ::= "--"
-<return> ::= "return"
-<break> ::= "break"
-<write> ::= "write"
-<read> ::= "read"
+<mayor> ::= ">"
+<MayorI> ::= ">="
+<menor> ::= "<"
+<MenorI> ::= "<="
+<igual> ::= "=="
+<diferente> ::= "!="
+<coma> ::= ","
