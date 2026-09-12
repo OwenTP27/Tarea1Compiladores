@@ -96,8 +96,11 @@
 // Aqui se usa directamente booleano para no validar semanticamente y tanto id como las llamadas si se van a validar que sean booleanas
 <valorLogico> ::= <expresionLogica> | <expresionRelacional> | <booleano> | <id> | <llamadaFuncion>
 
+// Expresion para colocar parentesis en operaciones aritmeticas
+<parentesisExpresion> ::= "є:" <expresionAritmetica> ":э"
+
 // En caso que se necesite valores sueltos en las expresiones
-<operando> ::= <literal> | <id> | <accesoArreglo> | <llamadaFuncion>
+<operando> ::= <literal> | <id> | <accesoArreglo> | <llamadaFuncion> | <parentesisExpresion>
 
 // El id de las funciones, van a tener el tipo que se le asigno al crear la funcion
 <llamadaFuncion> ::= <id> <LParen> <argumentos> <RParen>
