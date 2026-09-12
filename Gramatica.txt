@@ -1,119 +1,170 @@
-<programa> ::= <funciones> <principal> <funciones>
+============ NO TERMINALES ==================================
 
+// Inicio del programa puede haber funciones al antes o despues de principal pero solo un principal
+<programa> ::= <funciones> <main> <funciones>
+
+// Forma recursiva para que existan varias funciones o ninguna
 <funciones> ::= <funciones> <funcion> | <funcion> |
 
+// El tipo string se va a restringir de forma semantica
 <funcion> ::= <tipo> <id> <LParen> <parametros> <RParen> <bloque>
 
-<principal> ::= "void" "principal" <LParen> <RParen> <bloque>
+// Funcion principal del programa, no recibe parametros
+<main> ::= <void> <principal> <LParen> <RParen> <bloque>
 
-<parametros> ::= <parametros> <coma> <parametro> | <parametro>
+// Forma recursiva de parametros separados por comas
+<parametros> ::= <parametros> <coma> <parametro> | <parametro> |
 
-<parametro> ::= <tipo> <id> | <accesoArreglo>
+// Parametro simple
+<parametro> ::= <tipo> <id>
 
+// Bloque que encapsula el contenido del programa
 <bloque> ::= <LBlock> <sentencias> <RBlock>
 
-<sentencias> ::= <sentencias> <sentencia> | <sentencia>
+// Forma recursiva para que existan varias sentencias o ninguna
+<sentencias> ::= <sentencias> <sentencia> | <sentencia> |
 
+// La sentencia puede crear o asignar una variable, convertirse en una expresion, llamar una funcion, transformarse en funciones reservadas o estructural de control
 <sentencia> ::= <creacion> <FExpr> | <asignacion> <FExpr> | <expresion> <FExpr> | <llamadaFuncion> <FExpr> | <estructuraControl> | <return> <FExpr> | <break> <FExpr> | <read> <FExpr> | <write> <FExpr>
 
+// Para construir variable o arreglos unidimensionales
 <creacion> ::=  <creacionVariable> | <creacionArreglo>
 
-<creacionVariable> ::= <tipo> <id> | <tipo> <id> <asig> <expresion>
+// Creacion con o sin asignacion
+<creacionVariable> ::= <val> <tipo> <id> | <val> <tipo> <id> <asig> <expresion>
 
-<creacionArreglo> ::= <tipo> <id> <LParenC> <expresion> <RParenC> | <tipoArreglo> <id> <LParenC> <expresion> <RParenC> <asig> <LBlock> <valores> <RBlock>
+// Los tipos de arreglo van a ser validados semanticamente y se permite que sus indices sean expresiones ya que es permitido en lenguajes imperativos siempre y cuando sean expresiones aritmeticas, por lo que se validara de forma semantica tambien
+<creacionArreglo> ::= <val> <tipo> <id> <LParenC> <expresion> <RParenC> | <val> <tipo> <id> <LParenC> <expresion> <RParenC> <asig> <LBlock> <valores> <RBlock>
 
+// Todos los valores que se asignan al arreglo, se validara que la cantidad sea la correcta en el futuro
 <valores> ::= <valores> <coma> <valor> | <valor>
 
+// Se permite que el valor ingresado sea expresion siempre y cuando sea expresion aritmetica, se va a validar a futuro
 <valor> ::= <literal> | <expresion>
 
-<asignacion> ::= <variable> <asig> <expresion>
+// Para modificar un valor existente o asignar un valor a una variable vacia
+<asignacion> ::= <id> <asig> <expresion> | <accesoArreglo> <asig> <expresion>
 
-<variable> ::= <id> | <accesoArreglo>
-
+// Para accesar al valor que esta en algun indice del arreglo, se va validar semanticamente que el indice sea valido
 <accesoArreglo> ::= <id> <LParenC> <expresion> <RParenC>
 
+// expresion puede llegar a todos los tipos de operaciones y literales
 <expresion> ::= <expresionLogica> | <expresionRelacional> | <expresionAritmetica> | <operando>
 
+// Se va a respetar la precedencia en el sintactico
 <expresionAritmetica> ::= <modulo>
 
+// Se va a respetar la precedencia en el sintactico
 <modulo> ::= <modulo> "mod" <multiplicacion> | <multiplicacion>
 
+// Se va a respetar la precedencia en el sintactico
 <multiplicacion> ::= <multiplicacion> <mul> <sumaResta> | <multiplicacion> <div> <sumaResta> | <multiplicacion> <DivE> <sumaResta> | <sumaResta>
 
+// Se va a respetar la precedencia en el sintactico
 <sumaResta> ::= <sumaResta> <sum> <potencia> | <sumaResta> <res> <potencia> | <potencia>
 
+// Se va a respetar la precedencia en el sintactico
 <potencia> ::= <unario> <pot> <potencia> | <unario>
 
-<unario> ::= <res> <unario> | <postfijo>
+// Se elimina la posibilidad de literal entero negativo para evitar alguna posible ambiguedad en CUP
+<unario> ::= <res> <unario> | <posfijo>
 
-<postfijo> ::= <operando> <inc> | <operando> <dec> | <operando>
+// Se respeta que el incremento o decremento vayan despues del operando
+<posfijo> ::= <operando> <inc> | <operando> <dec> | <operando>
 
+// Forma ʃ:operando1:ʅ operador ʃ:operando2:ʅ
 <expresionRelacional> ::= <operandoRelacional> <operadorRelacional> <operandoRelacional>
 
-<operandoRelacional> ::= <LParenC> <valor_relacional> <RParenC>
+// Forma ʃ:operando:ʅ
+<operandoRelacional> ::= <LParenC> <valorRelacional> <RParenC>
 
-<valor_relacional> ::= <expresionAritmetica> | <id> | <accesoArreglo> | <llamadaFuncion> | <literal>
+// Lo que puede ser el operandoRelacional, las llamadas, id o literales son validas si son enteros o flotantes, que se van a validar semanticamente
+<valorRelacional> ::= <expresionAritmetica> | <id> | <accesoArreglo> | <llamadaFuncion> | <literal>
 
+// Ya que no hay simbolos relacionales especificos se usan los comunes en el paradigma operativo
 <operadorRelacional> ::= <menor> | <MenorI> | <mayor> | <MayorI> | <igual> | <diferente>
 
-<expresionLogica> ::= <disyuncion>
+// Se separa disyuncion y conjuncion de negacion ya que la negacion es unaria. Forma є:operando1:э operador є:operando2:э
+<expresionLogica> ::= <operandoLogico> <operadorLogico> <operandoLogico> | <neg> <operandoLogico>
 
-<disyuncion> ::= <disyuncion> <dis> <conjuncion> | <conjuncion>
+// Se usa λ y θ
+<operadorLogico> ::= <dis> | <con>
 
-<conjuncion> ::= <conjuncion> <con> <negacion> | <negacion>
+// Forma є:operando1:э
+<operandoLogico> ::= <LParen> <valorLogico> <RParen>
 
-<negacion> ::= <neg> <negacion> | <operando_logico>
+// Aqui se usa directamente booleano para no validar semanticamente y tanto id como las llamadas si se van a validar que sean booleanas
+<valorLogico> ::= <expresionLogica> | <expresionRelacional> | <booleano> | <id> | <llamadaFuncion>
 
-<operando_logico> ::= <LParen> <expresionLogica> <RParen> | <expresionRelacional> | <booleano> | <id>
+// En caso que se necesite valores sueltos en las expresiones
+<operando> ::= <literal> | <id> | <accesoArreglo> | <llamadaFuncion>
 
-<expresion_parentizada> ::= <LParen> <expresionAritmetica> <RParen>
+// El id de las funciones, van a tener el tipo que se le asigno al crear la funcion
+<llamadaFuncion> ::= <id> <LParen> <argumentos> <RParen>
 
-<operando> ::= <literal> | <id> | <accesoArreglo> | <llamadaFuncion> | <expresion_parentizada>
+// Forma recursiva de argumentos con posibilidad de que sea vacio y separados por comas
+<argumentos> ::= <argumentos> <coma> <argumento> | <argumento> |
 
-<llamadaFuncion> ::= <id><LParen> <argumentos> <RParen>
-
-<argumentos> ::= <argumentos> <coma> <argumento> | <argumento>
-
+// Todo lo que puede recibir como parametro una funcion, se va a validar semanticamente que el tipo de parametro que reciba coincida con el tipo de parametro esperado
 <argumento> ::= <expresionAritmetica> | <expresionRelacional> | <expresionLogica> | <id> | <accesoArreglo> | <literal>
 
+// Aqui se separa en los tres tipos de estructuras de control
 <estructuraControl> ::= <if> | <while> | <for>
 
-<if> ::= "if" <LParen> <expresionLogica> <RParen> <bloque> <elif> <else> | "if" <LParen> <expresionLogica> <RParen> <bloque> <else> | "if" <LParen> <expresionLogica> <RParen> <bloque>
+// Puede ser if solo, con uno o mas elif, con else o con todos
+<if> ::= "if" <LParen> <condicion> <RParen> <bloque> <elif> <else> | "if" <LParen> <condicion> <RParen> <bloque> <else> | "if" <LParen> <condicion> <RParen> <bloque>
 
-<elif> ::= "elif" <LParen> <expresionLogica> <RParen> <bloque> <elif> |
+// Permite 0 o varios elif
+<elif> ::= "elif" <LParen> <condicion> <RParen> <bloque> <elif> | "elif" <LParen> <condicion> <RParen> <bloque> |
 
+// Permite un unico else o ninguno
 <else> ::= "else" <bloque> |
 
-<while> ::= "while" <LParen> <expresionLogica> <RParen> <bloque>
+// Un while simple
+<while> ::= "while" <LParen> <condicion> <RParen> <bloque>
 
-<for> ::= "for" <LParen> <declaracion> <FExpr> <expresionRelacional> <FExpr> <incrementoDecremento> <RParen> <bloque>
+// No hay una forma establecida de for por lo que se toma inspiracion de lenguajes imperativos comunes, se usa » como separador
+<for> ::= "for" <LParen> <creacionVariable> <FExpr> <condicion> <FExpr> <incrementoDecremento> <RParen> <bloque>
 
+// condiciones para una estructura de control
+<condicion> ::= <expresionLogica> | <booleano> | expresionRelacional
+
+// Sujeto a cambios por posible ambiguedad
 <incrementoDecremento> ::= <id> <inc> | <id> <dec>
 
+// Solo retorna char, booleano, entero o flotante se va a validar semanticamente que no pueda retornar string
 <return> ::= "return" <valorRetorno>
 
-<valorRetorno> ::= <expresionAritmetica> | <literal> | <id> | <accesoArreglo> | <llamadaFuncion>
+// Todos son char, booleano, entero o flotante, string sera restrigido semanticamente
+<valorRetorno> ::= <expresionAritmetica> | <expresionRelacional> | <expresionLogica> | <literal> | <id> | <accesoArreglo> | <llamadaFuncion>
 
-<read> ::= "read" <LParen> <literal> <RParen>
+// Solo permite leer enteros, flotantes o char por lo que se van a hacer las validaciones pertinentes
+<read> ::= "read" <LParen> <id> <RParen> | "read" <LParen> <accesoArreglo> <RParen>
 
-<write> ::= "write" <LParen> <literal> <RParen> | "write" <LParen> <id> <RParen> | "write" <LParen> <accesoArreglo> <RParen>
+// Solo permite string, booleano, entero o flotante, se restringira char
+<write> ::= "write" <LParen> <valorWrite> <RParen>
 
+// Se restringira char
+<valorWrite> ::= <literal> | <id> | <accesoArreglo> | <expresionAritmetica> | <expresionRelacional> | expresionLogica
+
+// Valores literales
 <literal> ::= <entero> | <flotante> | <booleano> | <char> | <string>
-
 
 ============ TERMINALES =================================
 
 <tipo> ::= "int" | "float" | "bool" | "char" | "string"
-<chars> ::= <chars> <char> | <char>
 <char> ::= "'" ([a-zA-Z0-9_'!@#$%^&*=] ) "'"
-<string> ::= '"' <chars> '"'
-<id> ::= [a-zA-Z_] | [a-zA-Z_] <chars>
+<string> ::= '"' <caracteres> '"'
+<caracteres> ::= <caracteres> <caracter> | <caracter>
+<caracter> ::= [a-zA-Z0-9_'!@#$%^&*=]
+<id> ::= [a-zA-Z_] | [a-zA-Z_] <caracteres>
 <booleano> ::= "true" | "false"
-<flotante> ::= <entero> "." [0-9]+
-<entero> ::= <res> <enteroPos> | <enteroPos> | "0"
-<enteroPos> ::= numeros
+<flotante> ::= <entero> "." <numeros>
+<entero> ::= <numerosPos> <numeros> | <numero>
 <numeros> ::= <numeros> <numero> | <numero>
-<numero> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<numero> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "0"
+<numerosPos> ::= <numerosPos> <numeroPos> | <numeroPos>
+<numeroPos> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 <break> ::= "break"
 
 // Simbolos declarados como terminales para reutilizacion sencilla
@@ -129,9 +180,6 @@
 <dis> ::= "θ"
 <neg> ::= "Σ"
 <FExpr> ::= "»"
-<LComen> ::= "¡"
-<RComen> ::= "!"
-<comen> ::= "|"
 <sum> ::= "+"
 <res> ::= "-"
 <div> ::= "/"
@@ -148,3 +196,5 @@
 <igual> ::= "=="
 <diferente> ::= "!="
 <coma> ::= ","
+<void> ::= "void"
+<principal> ::= "principal"
